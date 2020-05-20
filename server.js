@@ -1,15 +1,28 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
+const os = require('os');
 const AdmZip = require('adm-zip');
+const parse = require('csv-parse/lib/sync');
 
-const zipFile = './2019-acled.zip';
+const zipFile = './acled.zip';
+const zip = new AdmZip(zipFile);
+const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'acled-'));
 
-if (fs.existsSync(zipFile)) {
-    console.info(`${zipFile} already extracted.`);
-} else {
-    console.info(`extracting ${zipFile}`);
-    const zip = new AdmZip('./2019-acled.zip');
-    zip.extractAllTo('./node_temp', true);
-}
+console.info(`extracting ${zipFile} to ${tempDir}`);
+zip.extractAllTo(tempDir, true);
 
+const csvFile = 'acled.csv';
+const content = fs.readFileSync(`${tempDir}/${csvFile}`);
+const records = parse(content, {
+    columns: true,
+    skip_empty_lines: true
+});
+
+console.info(`${csvFile} has ${records.length} records`);
+
+console.info(`Deleting ${csvFile}`);
+fs.unlinkSync(`${tempDir}/${csvFile}`);
+console.info(`Deleting ${tempDir}`);
+fs.rmdirSync(tempDir);
