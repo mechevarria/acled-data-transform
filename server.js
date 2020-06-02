@@ -42,7 +42,8 @@ const records = parse(content, {
 
 console.info(`${csvFile} has ${records.length} records`);
 
-fs.writeFileSync('event.csv', stringify(records, {
+const outputFile = 'event.csv';
+fs.writeFileSync(outputFile, stringify(records, {
     header: true
 }));
 
