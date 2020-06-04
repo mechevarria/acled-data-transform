@@ -24,6 +24,9 @@ const records = parse(content, {
         const momentDate = moment(record['event_date'], 'DD MMM YYYY').format('YYYYMMDD');
         record['event_date'] = momentDate.toString();
 
+        const momentUtc = moment.unix(record['timestamp']).utc();
+        record['timestamp'] = momentUtc.format();
+
         delete record['data_id'];
         delete record['iso'];
         delete record['event_id_no_cnty'];
