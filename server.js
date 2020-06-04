@@ -5,6 +5,7 @@ const os = require('os');
 const AdmZip = require('adm-zip');
 const parse = require('csv-parse/lib/sync');
 const stringify = require('csv-stringify/lib/sync');
+const moment = require('moment');
 
 const zipFile = './acled.zip';
 const zip = new AdmZip(zipFile);
@@ -17,9 +18,11 @@ const content = fs.readFileSync(`${os.tmpdir()}/${csvFile}`);
 const records = parse(content, {
     columns: true,
     skip_empty_lines: true,
-    to_line: 300000,
+    to_line: 200000,
     on_record: (record) => {
         record['geolocation'] = `POINT (${record['longitude']} ${record['latitude']})`;
+        const momentDate = moment(record['event_date'], 'DD MMM YYYY').format('YYYYMMDD');
+        record['event_date'] = momentDate.toString();
 
         delete record['data_id'];
         delete record['iso'];
