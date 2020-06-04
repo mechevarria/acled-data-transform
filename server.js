@@ -27,9 +27,6 @@ const records = parse(content, {
         const momentUtc = moment.unix(record['timestamp']).utc();
         record['timestamp'] = momentUtc.format();
 
-        const assocActor1 = record['assoc_actor_1'];
-        record['assoc_actor_1'] = assocActor1.substring(0, assocActor1.indexOf(';'));
-
         delete record['data_id'];
         delete record['iso'];
         delete record['event_id_no_cnty'];
